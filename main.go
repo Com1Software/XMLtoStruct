@@ -111,25 +111,7 @@ func RtnXMLTagData(xdata string, xvar string) string {
 
 }
 
-func BuildApp() {
-	xdata := "package main\n\n"
-	xdata = xdata + "import (\n"
-	xdata = xdata + fmt.Sprintf("     %q", "fmt")
-	xdata = xdata + "\n)\n"
-	xdata = xdata + "func main() {\n"
-	xdata = xdata + fmt.Sprintf("    fmt.Println( %q )\n", "Hello World")
-	xdata = xdata + "}\n"
-
-	err := os.WriteFile("app/main.go", []byte(xdata), 0644)
-	if err != nil {
-		fmt.Printf("Error %s\n", err)
-	}
-
-}
-
-func main() {
-	fmt.Println("Convert XML file to Go Structs")
-	xFile := "app/test.xml"
+func BuildApp(xFile string) {
 	xmlFile, err := os.Open(xFile)
 	if err != nil {
 		fmt.Println(err)
@@ -146,6 +128,34 @@ func main() {
 	// z := RtnXMLMaxTagDepth(string(byteValue))
 	//	z := RtnXMLTagData(string(byteValue), "users")
 	fmt.Println(z)
-	BuildApp()
+
+	xdata := "package main\n\n"
+	xdata = xdata + "import (\n"
+	xdata = xdata + fmt.Sprintf("     %q", "fmt")
+	xdata = xdata + "\n)\n"
+
+	xdata = xdata + "type " + RtnXMLLevelOneTag(string(byteValue)) + " struct {\n"
+	xdata = xdata + fmt.Sprintf("  fmt.Println( %q )\n", "XML to Strucs Test Output")
+	xdata = xdata + "}\n"
+
+	//		XMLName xml.Name `xml:"user"`
+
+	xdata = xdata + "func main() {\n"
+	xdata = xdata + fmt.Sprintf("    fmt.Println( %q )\n", "XML to Strucs Test Output")
+	xdata = xdata + fmt.Sprintf("    fmt.Printf( %q )\n\n )\n", "Using "+xFile)
+	xdata = xdata + "}\n"
+
+	err = os.WriteFile("app/main.go", []byte(xdata), 0644)
+	if err != nil {
+		fmt.Printf("Error %s\n", err)
+	}
+
+}
+
+func main() {
+	fmt.Println("Convert XML file to Go Structs")
+	xFile := "app/test.xml"
+
+	BuildApp(xFile)
 
 }
