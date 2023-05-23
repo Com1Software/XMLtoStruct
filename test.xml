@@ -1,1 +1,42 @@
-
+<?xml version="1.0" encoding="UTF-8"?>
+<users>
+  <user>
+    <name>Joe Smith</name>
+    <address>123 Street</address>
+    <city>Cleveland/city>
+    <state>OH</state>
+    <territory>
+      <location>Ohio/PA</location>
+        <contact>George Brown</contact>
+        <contact>Steve Green</contact>
+      <location>NY/PA</location>
+        <contact>George Brown</contact>
+        <contact>Jan Smith</contact>
+       <location>Vermont</location>
+        <contact>George Brown</contact>
+     </territory>
+     <product>
+        <item>Hammer</item>
+        <item>Saw</item>
+        <item>Nails</item>
+     </product>
+   </user>
+  <user">
+    <name>Bill Jones</name>
+    <address>222 3rd Street</address>
+    <city>Parma/city>
+    <state>OH</state>
+    <territory>
+      <location>Ohio/PA</location>
+        <contact>George Brown</contact>
+      <location>NY/PA</location>
+        <contact>Jan Smith</contact>
+       <location>Vermont</location>
+        <contact>Hank Blue</contact>
+     </territory>
+     <product>
+        <item>Hammer</item>
+        <item>Saw</item>
+      </product>
+   </user>
+   </users>
