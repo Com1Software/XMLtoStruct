@@ -212,7 +212,7 @@ func BuildApp(xFile string) {
 	for i := 0; i < z; i++ {
 		ii := RtnXMLMaxTagDepth(string(byteValue), i)
 		fmt.Println(ii)
-		for iii := 0; iii < ii; iii++ {
+		for iii := 0; iii < ii+1; iii++ {
 			fmt.Println(RtnXMLItemName(string(byteValue), i, iii))
 		}
 	}
