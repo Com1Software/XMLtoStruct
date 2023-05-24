@@ -65,8 +65,9 @@ func RtnXMLLevelOneTag(xdata string) string {
 	return ydata
 }
 
-func RtnXMLMaxTagDepth(xdata string) int {
+func RtnXMLMaxTagDepth(xdata string, xctl int) int {
 	lev := 0
+	levcnt := 0
 	maxlev := 0
 	son := false
 	eon := false
@@ -87,10 +88,14 @@ func RtnXMLMaxTagDepth(xdata string) int {
 				//				fmt.Printf("On Out %d\n", lev)
 			case xdata[i:i+1] == ">" && son == true && hon == 2:
 				son = false
+
 				//				fmt.Printf("Off In %d\n", lev)
 			case xdata[i:i+1] == "<" && son == false && hon == 2:
 				lev++
 				son = true
+				if lev == xctl {
+					levcnt++
+				}
 				//				fmt.Printf("On In %d\n", lev)
 			}
 			if lev > maxlev && hon == 2 {
@@ -98,7 +103,12 @@ func RtnXMLMaxTagDepth(xdata string) int {
 			}
 		}
 	}
-	return maxlev
+	if xctl == 0 {
+		return maxlev
+	} else {
+		return levcnt
+	}
+
 }
 func RtnXMLTagData(xdata string, xvar string) string {
 	ydata := ""
@@ -135,15 +145,21 @@ func BuildApp(xFile string) {
 	fmt.Println("Successfully Opened xml")
 	byteValue, _ := ioutil.ReadAll(xmlFile)
 	fmt.Printf("Size file %d\n", len(byteValue))
+	//------------------------------------------------------------------------------
 	//fmt.Printf("-- %s\n", xmlFile)
 	//fmt.Printf(" -- %s\n", byteValue)
 	// z := RtnXMLTagCount(string(byteValue), RtnXMLLevelOneTag(string(byteValue)))
 	// z := RtnXMLLevelOneTag(string(byteValue))
 	// z := RtnXMLLevelOneTag(string(byteValue))
-	z := RtnXMLMaxTagDepth(string(byteValue))
+	// z := RtnXMLMaxTagDepth(string(byteValue), 0)
 	//	z := RtnXMLTagData(string(byteValue), "users")
-	fmt.Println(z)
-
+	// fmt.Println(z)
+	//-----------------------------------------------------------------------------
+	z := RtnXMLMaxTagDepth(string(byteValue), 0)
+	for i := 0; i < z; i++ {
+		fmt.Println(RtnXMLMaxTagDepth(string(byteValue), i))
+	}
+	//-----------------------------------------------------------------------------
 	xdata := "package main\n\n"
 	xdata = xdata + "import (\n"
 	xdata = xdata + fmt.Sprintf("     %q", "fmt")
