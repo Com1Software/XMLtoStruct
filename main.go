@@ -119,7 +119,6 @@ func RtnXMLItemName(xdata string, xlev int, xpos int) string {
 	eon := false
 	hon := 0
 	xon := false
-	xxon := false
 	for i := 0; i < len(xdata); i++ {
 		if i < len(xdata)-1 {
 			switch {
@@ -129,18 +128,17 @@ func RtnXMLItemName(xdata string, xlev int, xpos int) string {
 				hon = 2
 			case xdata[i:i+1] == ">" && eon == true && hon == 2:
 				eon = false
-				//             fmt.Printf("Off Out %d\n", lev)
+			//	fmt.Printf("Off Out %d\n", lev)
 			case xdata[i:i+2] == "</" && eon == false && hon == 2:
 				lev--
 				eon = true
-				//				fmt.Printf("On Out %d\n", lev)
+			//	fmt.Printf("On Out %d\n", lev)
 			case xdata[i:i+1] == ">" && son == true && hon == 2:
 				son = false
-				if xon {
-					xxon = false
+				xon = false
+				// i = len(xdata)
 
-				}
-				//				fmt.Printf("Off In %d\n", lev)
+			//	fmt.Printf("Off In %d\n", lev)
 			case xdata[i:i+1] == "<" && son == false && hon == 2:
 				lev++
 				son = true
@@ -148,22 +146,14 @@ func RtnXMLItemName(xdata string, xlev int, xpos int) string {
 					levcnt++
 					if levcnt == xpos {
 						xon = true
-					} else {
-						if xon == true {
-							xon = false
-							i = len(xdata)
-						}
+						i++
 
 					}
-				}
 
-				if xon {
-					xxon = false
-					i++
 				}
-				//				fmt.Printf("On In %d\n", lev)
+				//	fmt.Printf("On In %d\n", lev)
 			}
-			if xxon {
+			if xon {
 				ydata = ydata + xdata[i:i+1]
 			}
 		}
@@ -214,16 +204,18 @@ func BuildApp(xFile string) {
 	// z := RtnXMLLevelOneTag(string(byteValue))
 	// z := RtnXMLLevelOneTag(string(byteValue))
 	//	z := RtnXMLTagData(string(byteValue), "users")
-	z := RtnXMLMaxTagDepth(string(byteValue), 0)
-	zz := RtnXMLItemName(string(byteValue), 4, 1)
-	fmt.Printf("max %d level item %s\n", z, zz)
-	//-----------------------------------------------------------------------------
 	// z := RtnXMLMaxTagDepth(string(byteValue), 0)
-	// for i := 0; i < z; i++ {
-	//	ii := RtnXMLMaxTagDepth(string(byteValue), i)
-	//	fmt.Println(ii)
-	//		fmt.Println(RtnXMLItemName(string(byteValue), i, 1))
-	//	}
+	// zz := RtnXMLItemName(string(byteValue), 2, 1)
+	// fmt.Printf("max %d level item %s\n", z, zz)
+	//-----------------------------------------------------------------------------
+	z := RtnXMLMaxTagDepth(string(byteValue), 0)
+	for i := 0; i < z; i++ {
+		ii := RtnXMLMaxTagDepth(string(byteValue), i)
+		fmt.Println(ii)
+		for iii := 0; iii < ii; iii++ {
+			fmt.Println(RtnXMLItemName(string(byteValue), i, iii))
+		}
+	}
 	//-----------------------------------------------------------------------------
 	xdata := "package main\n\n"
 	xdata = xdata + "import (\n"
