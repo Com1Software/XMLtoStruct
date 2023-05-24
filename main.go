@@ -68,17 +68,32 @@ func RtnXMLLevelOneTag(xdata string) string {
 func RtnXMLMaxTagDepth(xdata string) int {
 	lev := 0
 	maxlev := 0
-	//	ton := false
-
+	son := false
+	eon := false
+	hon := 0
 	for i := 0; i < len(xdata); i++ {
 		if i < len(xdata)-1 {
-			if xdata[i:i+1] == "<" {
-				lev++
-			}
-			if xdata[i:i+2] == "</" {
+			switch {
+			case xdata[i:i+2] == "<?" && hon == 0:
+				hon = 1
+			case xdata[i:i+2] == "?>" && hon == 1:
+				hon = 2
+			case xdata[i:i+1] == ">" && eon == true && hon == 2:
+				eon = false
+				//             fmt.Printf("Off Out %d\n", lev)
+			case xdata[i:i+2] == "</" && eon == false && hon == 2:
 				lev--
+				eon = true
+				//				fmt.Printf("On Out %d\n", lev)
+			case xdata[i:i+1] == ">" && son == true && hon == 2:
+				son = false
+				//				fmt.Printf("Off In %d\n", lev)
+			case xdata[i:i+1] == "<" && son == false && hon == 2:
+				lev++
+				son = true
+				//				fmt.Printf("On In %d\n", lev)
 			}
-			if lev > maxlev {
+			if lev > maxlev && hon == 2 {
 				maxlev = lev
 			}
 		}
@@ -122,10 +137,10 @@ func BuildApp(xFile string) {
 	fmt.Printf("Size file %d\n", len(byteValue))
 	//fmt.Printf("-- %s\n", xmlFile)
 	//fmt.Printf(" -- %s\n", byteValue)
-	z := RtnXMLTagCount(string(byteValue), RtnXMLLevelOneTag(string(byteValue)))
+	// z := RtnXMLTagCount(string(byteValue), RtnXMLLevelOneTag(string(byteValue)))
 	// z := RtnXMLLevelOneTag(string(byteValue))
 	// z := RtnXMLLevelOneTag(string(byteValue))
-	// z := RtnXMLMaxTagDepth(string(byteValue))
+	z := RtnXMLMaxTagDepth(string(byteValue))
 	//	z := RtnXMLTagData(string(byteValue), "users")
 	fmt.Println(z)
 
@@ -145,7 +160,6 @@ func BuildApp(xFile string) {
 	xdata = xdata + fmt.Sprintf("    fmt.Printf( %q )\n\n )\n", "Using "+xFile)
 	xdata = xdata + "}\n"
 
-	///	err = os.WriteFile("app/main.go", []byte(xdata), 0644)
 	f, err := os.Create("app/main.go")
 	if err != nil {
 		fmt.Printf("Error %s\n", err)
