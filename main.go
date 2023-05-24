@@ -131,17 +131,14 @@ func RtnXMLItemName(xdata string, xlev int, xpos int) string {
 				eon = false
 				//             fmt.Printf("Off Out %d\n", lev)
 			case xdata[i:i+2] == "</" && eon == false && hon == 2:
-				if xon {
-					xxon = false
-				}
 				lev--
 				eon = true
 				//				fmt.Printf("On Out %d\n", lev)
 			case xdata[i:i+1] == ">" && son == true && hon == 2:
 				son = false
 				if xon {
-					xxon = true
-					i++
+					xxon = false
+
 				}
 				//				fmt.Printf("Off In %d\n", lev)
 			case xdata[i:i+1] == "<" && son == false && hon == 2:
@@ -158,6 +155,11 @@ func RtnXMLItemName(xdata string, xlev int, xpos int) string {
 						}
 
 					}
+				}
+
+				if xon {
+					xxon = false
+					i++
 				}
 				//				fmt.Printf("On In %d\n", lev)
 			}
@@ -211,17 +213,17 @@ func BuildApp(xFile string) {
 	// z := RtnXMLTagCount(string(byteValue), RtnXMLLevelOneTag(string(byteValue)))
 	// z := RtnXMLLevelOneTag(string(byteValue))
 	// z := RtnXMLLevelOneTag(string(byteValue))
-	// z := RtnXMLMaxTagDepth(string(byteValue), 0)
 	//	z := RtnXMLTagData(string(byteValue), "users")
-	// fmt.Println(z)
-	//-----------------------------------------------------------------------------
 	z := RtnXMLMaxTagDepth(string(byteValue), 0)
-	for i := 0; i < z; i++ {
-		ii := RtnXMLMaxTagDepth(string(byteValue), i)
-		fmt.Println(ii)
-
-		fmt.Println(RtnXMLItemName(string(byteValue), i, 1))
-	}
+	zz := RtnXMLItemName(string(byteValue), 4, 1)
+	fmt.Printf("max %d level item %s\n", z, zz)
+	//-----------------------------------------------------------------------------
+	// z := RtnXMLMaxTagDepth(string(byteValue), 0)
+	// for i := 0; i < z; i++ {
+	//	ii := RtnXMLMaxTagDepth(string(byteValue), i)
+	//	fmt.Println(ii)
+	//		fmt.Println(RtnXMLItemName(string(byteValue), i, 1))
+	//	}
 	//-----------------------------------------------------------------------------
 	xdata := "package main\n\n"
 	xdata = xdata + "import (\n"
