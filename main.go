@@ -145,7 +145,17 @@ func BuildApp(xFile string) {
 	xdata = xdata + fmt.Sprintf("    fmt.Printf( %q )\n\n )\n", "Using "+xFile)
 	xdata = xdata + "}\n"
 
-	err = os.WriteFile("app/main.go", []byte(xdata), 0644)
+	///	err = os.WriteFile("app/main.go", []byte(xdata), 0644)
+	f, err := os.Create("app/main.go")
+	if err != nil {
+		fmt.Printf("Error %s\n", err)
+	}
+	l, err := f.WriteString(xdata)
+	if err != nil {
+		fmt.Printf("Error %s\n", err)
+	}
+	fmt.Println(l, "bytes written successfully")
+	err = f.Close()
 	if err != nil {
 		fmt.Printf("Error %s\n", err)
 	}
