@@ -188,6 +188,11 @@ func RtnXMLTagData(xdata string, xvar string) string {
 
 }
 
+type xml struct {
+	tag   string
+	level int
+}
+
 func BuildApp(xFile string) {
 	xmlFile, err := os.Open(xFile)
 	if err != nil {
