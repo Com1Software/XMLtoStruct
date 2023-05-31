@@ -214,11 +214,11 @@ func BuildApp(xFile string) {
 	// fmt.Printf("max %d level item %s\n", z, zz)
 	//-----------------------------------------------------------------------------
 	z := RtnXMLMaxTagDepth(string(byteValue), 0)
-	for i := 0; i < z; i++ {
+	for i := 1; i < z+1; i++ {
 		ii := RtnXMLMaxTagDepth(string(byteValue), i)
-		fmt.Println(ii)
+		fmt.Printf("  %d %d\n", ii, i)
 		for iii := 0; iii < ii+1; iii++ {
-			fmt.Println(RtnXMLItemName(string(byteValue), i, iii))
+			fmt.Printf("---- %s %d %d\n ", RtnXMLItemName(string(byteValue), i, iii), i, iii)
 		}
 	}
 	//-----------------------------------------------------------------------------
