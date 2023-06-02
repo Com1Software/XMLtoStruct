@@ -213,29 +213,87 @@ func BuildApp(xFile string) {
 	// zz := RtnXMLItemName(string(byteValue), 2, 1)
 	// fmt.Printf("max %d level item %s\n", z, zz)
 	//-----------------------------------------------------------------------------
-	z := RtnXMLMaxTagDepth(string(byteValue), 0)
-	for i := 1; i < z+1; i++ {
-		ii := RtnXMLMaxTagDepth(string(byteValue), i)
-		fmt.Printf("  %d %d\n", ii, i)
-		for iii := 0; iii < ii+1; iii++ {
-			fmt.Printf("---- %s %d %d\n ", RtnXMLItemName(string(byteValue), i, iii), i, iii)
-		}
-	}
+	//	z := RtnXMLMaxTagDepth(string(byteValue), 0)
+	//	for i := 1; i < z+1; i++ {
+	//		ii := RtnXMLMaxTagDepth(string(byteValue), i)
+	//		fmt.Printf("  Level = %d Max Depth = %d\n", i, ii)
+	//		for iii := 1; iii < ii+1; iii++ {
+	//			fmt.Printf(" Item Name = [%s]  Level: %d Position: %d\n ", RtnXMLItemName(string(byteValue), i, iii), i, iii)
+	//		}
+	//	}
 	//-----------------------------------------------------------------------------
 	xdata := "package main\n\n"
 	xdata = xdata + "import (\n"
 	xdata = xdata + fmt.Sprintf("     %q", "fmt")
-	xdata = xdata + "\n)\n"
+	xdata = xdata + "\n)\n\n"
 
-	xdata = xdata + "type " + RtnXMLLevelOneTag(string(byteValue)) + " struct {\n"
-	xdata = xdata + fmt.Sprintf("  fmt.Println( %q )\n", "XML to Strucs Test Output")
-	xdata = xdata + "}\n"
+	//xdata = xdata + "type " + RtnXMLLevelOneTag(string(byteValue)) + " struct {\n"
+	//xdata = xdata + fmt.Sprintf("  fmt.Println( %q )\n", "XML to Strucs Test Output")
+	//xdata = xdata + "}\n"
 
-	//		XMLName xml.Name `xml:"user"`
+	xdata = xdata + "type Users struct {\n"
+	xdata = xdata + "   XMLName xml.Name "
+	xdata = xdata + fmt.Sprintf("`xml:%q`\n", "users")
+	xdata = xdata + "	Users   []User "
+	xdata = xdata + fmt.Sprintf("`xml:%q`\n", "user")
+	xdata = xdata + "}\n\n"
+
+	xdata = xdata + "type User struct {\n"
+	xdata = xdata + "   XMLName xml.Name "
+	xdata = xdata + fmt.Sprintf("`xml:%q`\n", "user")
+	xdata = xdata + "	 Name   string "
+	xdata = xdata + fmt.Sprintf("`xml:%q`\n", "name")
+	xdata = xdata + "	 Address   string "
+	xdata = xdata + fmt.Sprintf("`xml:%q`\n", "address")
+	xdata = xdata + "	 City   string "
+	xdata = xdata + fmt.Sprintf("`xml:%q`\n", "city")
+	xdata = xdata + "	 State   string "
+	xdata = xdata + fmt.Sprintf("`xml:%q`\n", "state")
+	xdata = xdata + "	 Teritory   Teritory "
+	xdata = xdata + fmt.Sprintf("`xml:%q`\n", "teritory")
+	xdata = xdata + "	 Product   Product "
+	xdata = xdata + fmt.Sprintf("`xml:%q`\n", "product")
+	xdata = xdata + "}\n\n"
+
+	xdata = xdata + "type Teritory struct {\n"
+	xdata = xdata + "   XMLName xml.Name "
+	xdata = xdata + fmt.Sprintf("`xml:%q`\n", "teritory")
+	xdata = xdata + "	 Location   string "
+	xdata = xdata + fmt.Sprintf("`xml:%q`\n", "location")
+	xdata = xdata + "	 Contact   string "
+	xdata = xdata + fmt.Sprintf("`xml:%q`\n", "contact")
+	xdata = xdata + "}\n\n"
+
+	xdata = xdata + "type Product struct {\n"
+	xdata = xdata + "   XMLName xml.Name "
+	xdata = xdata + fmt.Sprintf("`xml:%q`\n", "product")
+	xdata = xdata + "	 Item   string "
+	xdata = xdata + fmt.Sprintf("`xml:%q`\n", "item")
+	xdata = xdata + "}\n\n"
 
 	xdata = xdata + "func main() {\n"
+	xdata = xdata + fmt.Sprintf(" xFile:=%q\n", xFile)
+
 	xdata = xdata + fmt.Sprintf("    fmt.Println( %q )\n", "XML to Strucs Test Output")
-	xdata = xdata + fmt.Sprintf("    fmt.Printf( %q )\n\n )\n", "Using "+xFile)
+	//	xdata = xdata + fmt.Sprintf("    fmt.Printf( %q )\n\n )\n", "Using "+xFile)
+
+	xdata = xdata + fmt.Sprintf(" xmlFile, err := os.Open(%q)\n", xFile)
+	//	xmlFile, err := os.Open("test.xml")
+	//	if err != nil {
+	//		fmt.Println(err)
+	//	}
+	//	fmt.Println("Successfully Opened test.xml")
+	///	defer xmlFile.Close()
+	//byteValue, _ := ioutil.ReadAll(xmlFile)
+	//	var users Users
+	//	xml.Unmarshal(byteValue, &users)
+
+	xdata = xdata + fmt.Sprintf("for i := 0; i < len(users.Users); i++ {\n")
+
+	//xdata = xdata + "	fmt.Println("User Name: " + users.Users[i].Name)"
+	xdata = xdata + fmt.Sprintf("`fmt.Println(%q`+ users.Uses[i].Name)\n", "UserName: \n")
+	xdata = xdata + "}\n"
+
 	xdata = xdata + "}\n"
 
 	f, err := os.Create("app/main.go")
