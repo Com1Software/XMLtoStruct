@@ -224,8 +224,12 @@ func BuildApp(xFile string) {
 	//-----------------------------------------------------------------------------
 	xdata := "package main\n\n"
 	xdata = xdata + "import (\n"
-	xdata = xdata + fmt.Sprintf("     %q", "fmt")
-	xdata = xdata + "\n)\n\n"
+	xdata = xdata + fmt.Sprintf("     %q\n", "fmt")
+	xdata = xdata + fmt.Sprintf("     %q\n", "os")
+	xdata = xdata + fmt.Sprintf("     %q\n", "io/ioutil")
+	xdata = xdata + fmt.Sprintf("     %q\n", "encoding/xml")
+
+	xdata = xdata + ")\n\n"
 
 	//xdata = xdata + "type " + RtnXMLLevelOneTag(string(byteValue)) + " struct {\n"
 	//xdata = xdata + fmt.Sprintf("  fmt.Println( %q )\n", "XML to Strucs Test Output")
@@ -272,26 +276,25 @@ func BuildApp(xFile string) {
 	xdata = xdata + "}\n\n"
 
 	xdata = xdata + "func main() {\n"
-	xdata = xdata + fmt.Sprintf(" xFile:=%q\n", xFile)
+	xdata = xdata + fmt.Sprintf(" xFile:=%q\n", "test.xml")
 
 	xdata = xdata + fmt.Sprintf("    fmt.Println( %q )\n", "XML to Strucs Test Output")
 	//	xdata = xdata + fmt.Sprintf("    fmt.Printf( %q )\n\n )\n", "Using "+xFile)
 
-	xdata = xdata + fmt.Sprintf(" xmlFile, err := os.Open(%q)\n", xFile)
-	//	xmlFile, err := os.Open("test.xml")
-	//	if err != nil {
-	//		fmt.Println(err)
-	//	}
-	//	fmt.Println("Successfully Opened test.xml")
-	///	defer xmlFile.Close()
-	//byteValue, _ := ioutil.ReadAll(xmlFile)
-	//	var users Users
-	//	xml.Unmarshal(byteValue, &users)
+	xdata = xdata + fmt.Sprintf(" xmlFile, err := os.Open(xFile)\n")
+	xdata = xdata + fmt.Sprintf("if err != nil {\n")
+	xdata = xdata + fmt.Sprintf("fmt.Println(err)\n")
+	xdata = xdata + fmt.Sprintf("	}\n")
+	xdata = xdata + fmt.Sprintf("    fmt.Println( %q )\n", "XML File Successfuly Opened")
+	xdata = xdata + fmt.Sprintf("	defer xmlFile.Close()\n")
+	xdata = xdata + fmt.Sprintf("	byteValue, _ := ioutil.ReadAll(xmlFile)\n")
+	xdata = xdata + fmt.Sprintf("	var users Users\n")
+	xdata = xdata + fmt.Sprintf("	xml.Unmarshal(byteValue, &users)\n")
 
 	xdata = xdata + fmt.Sprintf("for i := 0; i < len(users.Users); i++ {\n")
 
 	//xdata = xdata + "	fmt.Println("User Name: " + users.Users[i].Name)"
-	xdata = xdata + fmt.Sprintf("`fmt.Println(%q`+ users.Uses[i].Name)\n", "UserName: \n")
+	xdata = xdata + fmt.Sprintf("fmt.Println(%q + users.Users[i].Name)\n", "UserName: \n")
 	xdata = xdata + "}\n"
 
 	xdata = xdata + "}\n"
