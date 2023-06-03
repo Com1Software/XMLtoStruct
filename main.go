@@ -4,6 +4,7 @@ import (
 	"fmt"
 	"io/ioutil"
 	"os"
+	"unicode"
 )
 
 func RtnXMLTagCount(xdata string, xvar string) int {
@@ -193,6 +194,12 @@ type xml struct {
 	level int
 }
 
+func capitalize(str string) string {
+	runes := []rune(str)
+	runes[0] = unicode.ToUpper(runes[0])
+	return string(runes)
+}
+
 func BuildApp(xFile string) {
 	xmlFile, err := os.Open(xFile)
 	if err != nil {
@@ -230,10 +237,13 @@ func BuildApp(xFile string) {
 	xdata = xdata + fmt.Sprintf("     %q\n", "encoding/xml")
 
 	xdata = xdata + ")\n\n"
-
-	//xdata = xdata + "type " + RtnXMLLevelOneTag(string(byteValue)) + " struct {\n"
-	//xdata = xdata + fmt.Sprintf("  fmt.Println( %q )\n", "XML to Strucs Test Output")
-	//xdata = xdata + "}\n"
+	//---------------------------------------------------------------------------------------
+	xdata = xdata + "type x" + capitalize(RtnXMLLevelOneTag(string(byteValue))) + " struct {\n"
+	xdata = xdata + "   XMLName xml.Name "
+	xdata = xdata + fmt.Sprintf("`xml:%q`\n", "users")
+	xdata = xdata + "	Users   []User "
+	xdata = xdata + fmt.Sprintf("`xml:%q`\n", "user")
+	xdata = xdata + "}\n\n"
 
 	xdata = xdata + "type Users struct {\n"
 	xdata = xdata + "   XMLName xml.Name "
@@ -241,7 +251,7 @@ func BuildApp(xFile string) {
 	xdata = xdata + "	Users   []User "
 	xdata = xdata + fmt.Sprintf("`xml:%q`\n", "user")
 	xdata = xdata + "}\n\n"
-
+	//---------------------------------------------------------------------------------------
 	xdata = xdata + "type User struct {\n"
 	xdata = xdata + "   XMLName xml.Name "
 	xdata = xdata + fmt.Sprintf("`xml:%q`\n", "user")
