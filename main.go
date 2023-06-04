@@ -12,16 +12,19 @@ func RtnXMLStructs(xdata string) string {
 	blda := xml{}
 	blda.tag = "test"
 	bld = append(bld, blda)
-	mtd := RtnXMLMaxTagDepth(xdata, 0)
 	ydata := ""
-	xlev := 0
-	//
-	//	fmt.Printf("testing %d\n", xlev)
-	fmt.Printf("Max Tag Depth %d\n", mtd)
-	for clev := 0; clev < mtd; clev++ {
-		xlev = RtnXMLMaxTagDepth(xdata, clev)
-		fmt.Printf("clev -  %d xlev - %d\n", clev, xlev)
+
+	z := RtnXMLMaxTagDepth(xdata, 0)
+	for i := 1; i < z+1; i++ {
+		ii := RtnXMLMaxTagDepth(xdata, i)
+
+		fmt.Printf("  Level = %d Max Depth = %d\n", i, ii)
+		for iii := 1; iii < ii+1; iii++ {
+			tag, pltag := RtnXMLItemName(xdata, i, iii)
+			fmt.Printf(" Item Name = [%s - %s]  Level: %d Position: %d \n ", tag, pltag, i, iii)
+		}
 	}
+
 	return ydata
 
 }
