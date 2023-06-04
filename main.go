@@ -175,14 +175,17 @@ func RtnXMLMaxTagDepth(xdata string, xlev int) int {
 
 }
 
-func RtnXMLItemName(xdata string, xlev int, xpos int, tag string) string {
-	ydata := ""
+func RtnXMLItemName(xdata string, xlev int, xpos int) (string, string) {
+	tag := ""
+	pltag := ""
 	lev := 0
 	levcnt := 0
 	son := false
 	eon := false
 	hon := 0
 	xon := false
+	pxon := false
+	found := false
 	for i := 0; i < len(xdata); i++ {
 		if i < len(xdata)-1 {
 			switch {
@@ -192,17 +195,19 @@ func RtnXMLItemName(xdata string, xlev int, xpos int, tag string) string {
 				hon = 2
 			case xdata[i:i+1] == ">" && eon == true && hon == 2:
 				eon = false
-			//	fmt.Printf("Off Out %d\n", lev)
+				//				fmt.Printf("Off Out %d\n", lev)
 			case xdata[i:i+2] == "</" && eon == false && hon == 2:
 				lev--
 				eon = true
-			//	fmt.Printf("On Out %d\n", lev)
+				//				fmt.Printf("On Out %d\n", lev)
 			case xdata[i:i+1] == ">" && son == true && hon == 2:
 				son = false
+				if xon {
+					found = true
+				}
 				xon = false
-				// i = len(xdata)
-
-			//	fmt.Printf("Off In %d\n", lev)
+				pxon = false
+				//				fmt.Printf("Off In %d\n", lev)
 			case xdata[i:i+1] == "<" && son == false && hon == 2:
 				lev++
 				son = true
@@ -215,14 +220,26 @@ func RtnXMLItemName(xdata string, xlev int, xpos int, tag string) string {
 					}
 
 				}
-				//	fmt.Printf("On In %d\n", lev)
+				if lev == xlev-1 {
+					if found == false {
+						pxon = true
+						pltag = ""
+						i++
+
+					}
+				}
+				//				fmt.Printf("On In %d\n", lev)
 			}
 			if xon {
-				ydata = ydata + xdata[i:i+1]
+				tag = tag + xdata[i:i+1]
 			}
+			if pxon {
+				pltag = pltag + xdata[i:i+1]
+			}
+
 		}
 	}
-	return ydata
+	return tag, pltag
 
 }
 
@@ -285,9 +302,9 @@ func BuildApp(xFile string) {
 	// z := RtnXMLLevelOneTag(string(byteValue))
 	// z := RtnXMLLevelOneTag(string(byteValue))
 	//	z := RtnXMLTagData(string(byteValue), "users")
-	//z := RtnXMLMaxTagDepth(string(byteValue), 0)
-	//	zz := RtnXMLItemName(string(byteValue), 2, 1, "")
-	//	fmt.Printf("------ > max %d level item [%s]\n", z, zz)
+	z := RtnXMLMaxTagDepth(string(byteValue), 0)
+	zz, plt := RtnXMLItemName(string(byteValue), 4, 1)
+	fmt.Printf("------ > max %d level item [%s] PLT %s\n", z, zz, plt)
 	//-----------------------------------------------------------------------------
 	//	z := RtnXMLMaxTagDepth(string(byteValue), 0)
 	//	for i := 1; i < z+1; i++ {
@@ -300,7 +317,7 @@ func BuildApp(xFile string) {
 	//	}
 	//-----------------------------------------------------------------------------
 
-	fmt.Printf("structs \n--------- \n %s \n--------------\n", RtnXMLStructs(string(byteValue)))
+	//fmt.Printf("structs \n--------- \n %s \n--------------\n", RtnXMLStructs(string(byteValue)))
 
 	//-----------------------------------------------------------------------------
 	xdata := "package main\n\n"
