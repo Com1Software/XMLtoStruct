@@ -10,9 +10,11 @@ import (
 func RtnXMLStructs(xdata string) string {
 	bld := []xml{}
 	blda := xml{}
-	blda.tag = "test"
-	bld = append(bld, blda)
+	fpass := false
+	slev := 0
+	cstruc := ""
 	ydata := ""
+	add := false
 
 	z := RtnXMLMaxTagDepth(xdata, 0)
 	for i := 1; i < z+1; i++ {
@@ -22,8 +24,65 @@ func RtnXMLStructs(xdata string) string {
 		for iii := 1; iii < ii+1; iii++ {
 			tag, pltag := RtnXMLItemName(xdata, i, iii)
 			fmt.Printf(" Item Name = [%s - %s]  Level: %d Position: %d \n ", tag, pltag, i, iii)
+			add = true
+			for i := 0; i < len(bld); i++ {
+				if bld[i].tag == tag {
+					if bld[i].level == ii {
+						add = false
+					}
+				}
+			}
+			if add {
+				if len(pltag) == 0 {
+					cstruc = tag
+					slev = 0
+					fpass = true
+				} else {
+					if pltag == cstruc {
+						slev = 1
+					} else {
+						cstruc = pltag
+						slev = 2
+						//	fpass = false
+					}
+
+				}
+				blda.tag = tag
+				blda.level = i
+				blda.structure = cstruc
+				bld = append(bld, blda)
+			}
 		}
 	}
+	fmt.Printf("------------ build array = %d\n", len(bld))
+	for i := 0; i < len(bld); i++ {
+		switch {
+
+		case slev == 0:
+			ydata = ydata + "type x" + capitalize(bld[i].structure) + " struct {\n"
+			ydata = ydata + "   XMLName xml.Name "
+			ydata = ydata + fmt.Sprintf("`xml:%q`\n", bld[i].tag)
+		//	slev = 1
+
+		case slev == 1:
+			if fpass {
+				ydata = ydata + "	" + capitalize(bld[i].structure) + "   []" + capitalize(bld[i].tag) + " "
+				ydata = ydata + fmt.Sprintf("`xml:%q`\n", bld[i].tag)
+			}
+			//	slev = 2
+		case slev == 2:
+			ydata = ydata + "}\n\n"
+			//slev = 0
+		}
+
+		fmt.Printf("- tag %s structure %s level = %d\n", bld[i].tag, bld[i].structure, bld[i].level)
+	}
+	//	xdata = xdata + "type x" + capitalize(RtnXMLLevelOneTag(string(byteValue))) + " struct {\n"
+	//	xdata = xdata + "   XMLName xml.Name "
+	//	xdata = xdata + fmt.Sprintf("`xml:%q`\n", "users")
+	//	xdata = xdata + "	Users   []User "
+	//	xdata = xdata + fmt.Sprintf("`xml:%q`\n", "user")
+	//	xdata = xdata + "}\n\n"
 
 	return ydata
 
@@ -265,19 +324,18 @@ func BuildApp(xFile string) {
 	//	zz, plt := RtnXMLItemName(string(byteValue), 4, 1)
 	//	fmt.Printf("------ > max %d level item [%s] PLT %s\n", z, zz, plt)
 	//-----------------------------------------------------------------------------
-	z := RtnXMLMaxTagDepth(string(byteValue), 0)
-	for i := 1; i < z+1; i++ {
-		ii := RtnXMLMaxTagDepth(string(byteValue), i)
-
-		fmt.Printf("  Level = %d Max Depth = %d\n", i, ii)
-		for iii := 1; iii < ii+1; iii++ {
-			tag, pltag := RtnXMLItemName(string(byteValue), i, iii)
-			fmt.Printf(" Item Name = [%s - %s]  Level: %d Position: %d \n ", tag, pltag, i, iii)
-		}
-	}
+	//z := RtnXMLMaxTagDepth(string(byteValue), 0)
+	//for i := 1; i < z+1; i++ {
+	//	ii := RtnXMLMaxTagDepth(string(byteValue), i)
+	//		fmt.Printf("  Level = %d Max Depth = %d\n", i, ii)
+	//		for iii := 1; iii < ii+1; iii++ {
+	//			tag, pltag := RtnXMLItemName(string(byteValue), i, iii)
+	//			fmt.Printf(" Item Name = [%s - %s]  Level: %d Position: %d \n ", tag, pltag, i, iii)
+	//		}
+	//	}
 	//-----------------------------------------------------------------------------
 
-	// fmt.Printf("structs \n--------- \n %s \n--------------\n", RtnXMLStructs(string(byteValue)))
+	fmt.Printf("structs \n--------- \n %s \n--------------\n", RtnXMLStructs(string(byteValue)))
 
 	//-----------------------------------------------------------------------------
 	xdata := "package main\n\n"
