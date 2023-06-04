@@ -13,58 +13,14 @@ func RtnXMLStructs(xdata string) string {
 	blda.tag = "test"
 	bld = append(bld, blda)
 	mtd := RtnXMLMaxTagDepth(xdata, 0)
-	xlev := 1
-	xpos := 1
 	ydata := ""
-	lev := 0
-	levcnt := 0
-	son := false
-	eon := false
-	hon := 0
-	xon := false
-	//	xlev = RtnXMLMaxTagDepth(xdata, l)
+	xlev := 0
+	//
 	//	fmt.Printf("testing %d\n", xlev)
 	fmt.Printf("Max Tag Depth %d\n", mtd)
 	for clev := 0; clev < mtd; clev++ {
-		for i := 0; i < len(xdata); i++ {
-			if i < len(xdata)-1 {
-				switch {
-				case xdata[i:i+2] == "<?" && hon == 0:
-					hon = 1
-				case xdata[i:i+2] == "?>" && hon == 1:
-					hon = 2
-				case xdata[i:i+1] == ">" && eon == true && hon == 2:
-					eon = false
-				//	fmt.Printf("Off Out %d\n", lev)
-				case xdata[i:i+2] == "</" && eon == false && hon == 2:
-					lev--
-					eon = true
-				//	fmt.Printf("On Out %d\n", lev)
-				case xdata[i:i+1] == ">" && son == true && hon == 2:
-					son = false
-					xon = false
-					// i = len(xdata)
-
-				//	fmt.Printf("Off In %d\n", lev)
-				case xdata[i:i+1] == "<" && son == false && hon == 2:
-					lev++
-					son = true
-					if lev == xlev {
-						levcnt++
-						if levcnt == xpos {
-							xon = true
-							i++
-
-						}
-
-					}
-					//	fmt.Printf("On In %d\n", lev)
-				}
-				if xon {
-					ydata = ydata + xdata[i:i+1]
-				}
-			}
-		}
+		xlev = RtnXMLMaxTagDepth(xdata, clev)
+		fmt.Printf("clev -  %d xlev - %d\n", clev, xlev)
 	}
 	return ydata
 
@@ -302,22 +258,23 @@ func BuildApp(xFile string) {
 	// z := RtnXMLLevelOneTag(string(byteValue))
 	// z := RtnXMLLevelOneTag(string(byteValue))
 	//	z := RtnXMLTagData(string(byteValue), "users")
-	z := RtnXMLMaxTagDepth(string(byteValue), 0)
-	zz, plt := RtnXMLItemName(string(byteValue), 4, 1)
-	fmt.Printf("------ > max %d level item [%s] PLT %s\n", z, zz, plt)
-	//-----------------------------------------------------------------------------
 	//	z := RtnXMLMaxTagDepth(string(byteValue), 0)
-	//	for i := 1; i < z+1; i++ {
-	//		ii := RtnXMLMaxTagDepth(string(byteValue), i)
-	//		tag := RtnXMLItemName(string(byteValue), i-1, 1, "")
-	//		fmt.Printf("  Level = %d Max Depth = %d\n", i, ii)
-	//		for iii := 1; iii < ii+1; iii++ {
-	//			fmt.Printf(" Item Name = [%s]  Level: %d Position: %d Tag: %s\n ", RtnXMLItemName(string(byteValue), i, iii, tag), i, iii, tag)
-	//		}
-	//	}
+	//	zz, plt := RtnXMLItemName(string(byteValue), 4, 1)
+	//	fmt.Printf("------ > max %d level item [%s] PLT %s\n", z, zz, plt)
+	//-----------------------------------------------------------------------------
+	z := RtnXMLMaxTagDepth(string(byteValue), 0)
+	for i := 1; i < z+1; i++ {
+		ii := RtnXMLMaxTagDepth(string(byteValue), i)
+
+		fmt.Printf("  Level = %d Max Depth = %d\n", i, ii)
+		for iii := 1; iii < ii+1; iii++ {
+			tag, pltag := RtnXMLItemName(string(byteValue), i, iii)
+			fmt.Printf(" Item Name = [%s - %s]  Level: %d Position: %d \n ", tag, pltag, i, iii)
+		}
+	}
 	//-----------------------------------------------------------------------------
 
-	//fmt.Printf("structs \n--------- \n %s \n--------------\n", RtnXMLStructs(string(byteValue)))
+	// fmt.Printf("structs \n--------- \n %s \n--------------\n", RtnXMLStructs(string(byteValue)))
 
 	//-----------------------------------------------------------------------------
 	xdata := "package main\n\n"
