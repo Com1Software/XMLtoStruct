@@ -2,6 +2,8 @@
 
 https://codebeautify.org/
 
+https://www.convertjson.com/json-to-xml.htm
+
 https://pkg.go.dev/encoding/xml
 
 https://pkg.go.dev/encoding/xml#example-package-CustomMarshalXML
